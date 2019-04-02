@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 
-
 public class RegisterActivity extends AppCompatActivity {
     EditText emailET, passwordET, userNameET;
     FrameLayout registerBT;
@@ -33,8 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
                 if (checkForEmptyFields(emailET.getText().toString().trim(), passwordET.getText().toString().trim(), userNameET.getText().toString().trim())) {
                     if (checkValidEmail(emailET.getText().toString().trim())) {
                         if (checkValidPassword(passwordET.getText().toString().trim())) {
-                            Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), RegisterActivity.this);
-                                startActivity(new Intent(RegisterActivity.this, DetailsActivity.class));
+                            Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), userNameET.getText().toString(),RegisterActivity.this);
+                            startActivity(new Intent(RegisterActivity.this, DetailsActivity.class));
                             finish();
                         } else {
                             showAlertBox("Password should not less than 6 letters");

@@ -1,5 +1,7 @@
 package android.webinnovatives.com.seefgodriver.common;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by hp on 3/31/2019.
  */
@@ -12,4 +14,5 @@ public class ConstantManager {
     public static final String SHARED_PREFERENCES="SHARED_PREFERENCES";
 
 
+    public static LatLng CURRENT_LATLNG = null;
 }

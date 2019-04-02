@@ -1,10 +1,12 @@
 package android.webinnovatives.com.seefgodriver.auth;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.webinnovatives.com.seefgodriver.Home;
 import android.webinnovatives.com.seefgodriver.R;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -16,7 +18,6 @@ public class DetailsActivity extends AppCompatActivity {
     FrameLayout submitBtn;
     String cnicVAR, vehicleTypeVAR, vehicleRegistrationVAR, licenseNoVAR;
     String vehicleTypes[] = {"Truckx1", "Truckx2", "Truckx3", "Truckx4"};
-
 
 
     @Override
@@ -37,6 +38,10 @@ public class DetailsActivity extends AppCompatActivity {
                 setFields();
                 if (validateFields()) {
                     Toast.makeText(DetailsActivity.this, "Request to be send on server", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(DetailsActivity.this, Home.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
                 } else {
                     Toast.makeText(DetailsActivity.this, "Some field(s) empty!", Toast.LENGTH_LONG).show();
                 }
@@ -55,6 +60,8 @@ public class DetailsActivity extends AppCompatActivity {
                         vehicleTypeET.setText(vehicleTypes[which]);
                     }
                 });
+
+                builder.show();
             }
         });
 
@@ -66,7 +73,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     private void setFields() {
         cnicVAR = cnicET.getText().toString();
-        //vehicleTypeVAR = vehicleTypeET.getText().toString();
+        vehicleTypeVAR = vehicleTypeET.getText().toString();
         vehicleRegistrationVAR = vehicleRegistrationET.getText().toString();
         licenseNoVAR = licenseNoET.getText().toString();
     }

@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (checkForEmptyFields(emailET.getText().toString().trim(), passwordET.getText().toString().trim())) {
                     if (checkValidEmail(emailET.getText().toString().trim())) {
                         if (checkValidPassword(passwordET.getText().toString().trim())) {
-                            Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), LoginActivity.this);
+                            Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), "Dummy", LoginActivity.this);
                             startActivity(new Intent(LoginActivity.this, Home.class));
                             finish();
                         } else {

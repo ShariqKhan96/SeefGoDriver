@@ -8,10 +8,11 @@ import android.content.SharedPreferences;
  */
 
 public class Common {
-    public static void savePrefs(String email, String password, Context context) {
+    public static void savePrefs(String email, String password, String name, Context context) {
         SharedPreferences.Editor writer = context.getSharedPreferences(ConstantManager.SHARED_PREFERENCES, Context.MODE_PRIVATE).edit();
         writer.putString(ConstantManager.EMAIL, email);
         writer.putString(ConstantManager.PASSWORD, password);
+        writer.putString(ConstantManager.NAME, name);
         writer.apply();
     }
 
