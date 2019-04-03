@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.webxert.seefgouser.ParcelsActivity">
+    android:layout_height="match_parent">
 
     <include
         android:id="@+id/toolbar"
@@ -17,4 +16,8 @@
         android:layout_below="@+id/toolbar">
 
     </android.support.v7.widget.RecyclerView>
+
+    <include
+        android:id="@+id/no_records"
+        layout="@layout/no_records" />
 </RelativeLayout>

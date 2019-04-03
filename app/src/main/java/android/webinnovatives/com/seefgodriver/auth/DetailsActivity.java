@@ -17,7 +17,7 @@ public class DetailsActivity extends AppCompatActivity {
     EditText cnicET, vehicleTypeET, vehicleRegistrationET, licenseNoET;
     FrameLayout submitBtn;
     String cnicVAR, vehicleTypeVAR, vehicleRegistrationVAR, licenseNoVAR;
-    String vehicleTypes[] = {"Truckx1", "Truckx2", "Truckx3", "Truckx4"};
+    String vehicleTypes[] = {"Truck x1", "Truck x2", "Truck x3", "Truck x4"};
 
 
     @Override
@@ -37,11 +37,20 @@ public class DetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setFields();
                 if (validateFields()) {
-                    Toast.makeText(DetailsActivity.this, "Request to be send on server", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(DetailsActivity.this, Home.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
+                    if (cnicVAR.length() == 13) {
+                        if (licenseNoVAR.length() == 17) {
+                            Toast.makeText(DetailsActivity.this, "Request to be send on server", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(DetailsActivity.this, Home.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(DetailsActivity.this, "Invalid License Number", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else
+                        Toast.makeText(DetailsActivity.this, "Invalid CNIC", Toast.LENGTH_SHORT).show();
+
                 } else {
                     Toast.makeText(DetailsActivity.this, "Some field(s) empty!", Toast.LENGTH_LONG).show();
                 }

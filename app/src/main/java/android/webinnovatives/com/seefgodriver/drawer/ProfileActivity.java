@@ -33,6 +33,12 @@ public class ProfileActivity extends AppCompatActivity implements EditButtonList
         toolbarTv.setText("My Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         nameET = findViewById(R.id.user_name);
         passwordET = findViewById(R.id.password);
         emailET = findViewById(R.id.email);

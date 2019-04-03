@@ -26,6 +26,9 @@ import android.view.MenuItem;
 import android.webinnovatives.com.seefgodriver.auth.LoginActivity;
 import android.webinnovatives.com.seefgodriver.common.Common;
 import android.webinnovatives.com.seefgodriver.common.ConstantManager;
+import android.webinnovatives.com.seefgodriver.drawer.NotificationsActivity;
+import android.webinnovatives.com.seefgodriver.drawer.ProfileActivity;
+import android.webinnovatives.com.seefgodriver.drawer.TaskActivity;
 import android.webinnovatives.com.seefgodriver.services.LocationService;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,89 +90,9 @@ public class Home extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        checkForPermissions();
+        //checkForPermissions();
     }
 
-    private void checkForPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            //Toast.makeText(this, "Permission already Granted", Toast.LENGTH_SHORT).show();
-            displayLocationSettingsRequest(this);
-            Log.e("checkForPermissions", "Here");
-
-            return;
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST);
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST);
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                displayLocationSettingsRequest(this);
-                Log.e("onPermissionsResult", "Here");
-            } else {
-                Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void displayLocationSettingsRequest(Context context) {
-        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(context)
-                .addApi(LocationServices.API).build();
-        googleApiClient.connect();
-
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(10000 / 2);
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
-        builder.setAlwaysShow(true);
-
-        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onResult(LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                        Log.e("Here Success", "All location settings are satisfied.");
-                        Intent intent = new Intent(Home.this, LocationService.class);
-                        startService(intent);
-                        break;
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        Log.e(Home.class.getSimpleName(), "Location settings are not satisfied. Show the user a dialog to upgrade location settings ");
-
-                        try {
-                            // Show the dialog by calling startResolutionForResult(), and check the result
-                            // in onActivityResult().
-                            status.startResolutionForResult(Home.this, REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException e) {
-                            Log.e(Home.class.getSimpleName(), "PendingIntent unable to execute request.");
-                        }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        Log.i(Home.class.getSimpleName(), "Location settings are inadequate, and cannot be fixed here. Dialog not created.");
-                        break;
-                }
-            }
-        });
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CHECK_SETTINGS) {
-            Toast.makeText(this, "Location on", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -213,10 +136,16 @@ public class Home extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_packages) {
+            Intent intent = new Intent(this, TaskActivity.class);
+            startActivity(intent);
             // Handle the camera action
         } else if (id == R.id.nav_notificaitons) {
+            Intent intent = new Intent(this, NotificationsActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_profile) {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_help) {
 
