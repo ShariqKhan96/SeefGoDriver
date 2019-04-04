@@ -6,8 +6,8 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_packages"
-            android:icon="@drawable/parcel"
-            android:title="Parcel History" />
+            android:icon="@drawable/task"
+            android:title="Task History" />
 
         <item
             android:id="@+id/nav_notificaitons"
