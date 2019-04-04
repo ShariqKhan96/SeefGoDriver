@@ -12,6 +12,7 @@ public class ConstantManager {
     public static final String NAME="NAME";
     public static final String PASSWORD="PASSWORD";
     public static final String SHARED_PREFERENCES="SHARED_PREFERENCES";
+    public static String BASE_URL ="http://seefgo.webxert.com/android/";
 
 
     public static LatLng CURRENT_LATLNG = null;

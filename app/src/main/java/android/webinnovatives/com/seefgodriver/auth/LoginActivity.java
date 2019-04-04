@@ -1,5 +1,6 @@
 package android.webinnovatives.com.seefgodriver.auth;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -11,9 +12,21 @@ import android.view.View;
 import android.webinnovatives.com.seefgodriver.Home;
 import android.webinnovatives.com.seefgodriver.R;
 import android.webinnovatives.com.seefgodriver.common.Common;
+import android.webinnovatives.com.seefgodriver.common.ConstantManager;
+import android.webinnovatives.com.seefgodriver.network.VolleySingleton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -38,9 +51,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (checkForEmptyFields(emailET.getText().toString().trim(), passwordET.getText().toString().trim())) {
                     if (checkValidEmail(emailET.getText().toString().trim())) {
                         if (checkValidPassword(passwordET.getText().toString().trim())) {
-                            Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), "Dummy", LoginActivity.this);
-                            startActivity(new Intent(LoginActivity.this, Home.class));
-                            finish();
+
+                            callService();
+
+
                         } else {
                             showAlertBox("Password should not less than 6 letters");
                         }
@@ -54,6 +68,47 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void callService() {
+
+
+        final ProgressDialog dialog = new ProgressDialog(LoginActivity.this, R.style.MyAlertDialogStyle);
+        dialog.setTitle("Authenticating");
+        dialog.setMessage("Please Wait");
+        dialog.show();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "driverlogin.php",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        dialog.dismiss();
+                        if (response.equals("1")) {
+                            Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), "Dummy", LoginActivity.this);
+                            startActivity(new Intent(LoginActivity.this, Home.class));
+                            finish();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dialog.dismiss();
+                        Toast.makeText(LoginActivity.this, ""+error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> map = new HashMap<>();
+                map.put("email", emailET.getText().toString());
+                map.put("pass", passwordET.getText().toString());
+            return map;
+            }
+        };
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+
     }
 
     private void showAlertBox(String s) {

@@ -8,16 +8,27 @@ import android.os.Bundle;
 import android.view.View;
 import android.webinnovatives.com.seefgodriver.Home;
 import android.webinnovatives.com.seefgodriver.R;
+import android.webinnovatives.com.seefgodriver.common.ConstantManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DetailsActivity extends AppCompatActivity {
 
     EditText cnicET, vehicleTypeET, vehicleRegistrationET, licenseNoET;
     FrameLayout submitBtn;
     String cnicVAR, vehicleTypeVAR, vehicleRegistrationVAR, licenseNoVAR;
-    String vehicleTypes[] = {"Truck x1", "Truck x2", "Truck x3", "Truck x4"};
+    String vehicleTypes[] = {"Truckx1", "Truckx2", "Truckx3", "Truckx4"};
+
 
 
     @Override
@@ -37,19 +48,7 @@ public class DetailsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 setFields();
                 if (validateFields()) {
-                    if (cnicVAR.length() == 13) {
-                        if (licenseNoVAR.length() == 17) {
-                            Toast.makeText(DetailsActivity.this, "Request to be send on server", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(DetailsActivity.this, Home.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(DetailsActivity.this, "Invalid License Number", Toast.LENGTH_SHORT).show();
-                        }
-
-                    } else
-                        Toast.makeText(DetailsActivity.this, "Invalid CNIC", Toast.LENGTH_SHORT).show();
+                    callService();
 
                 } else {
                     Toast.makeText(DetailsActivity.this, "Some field(s) empty!", Toast.LENGTH_LONG).show();
@@ -74,6 +73,37 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void callService() {
+
+        StringRequest request = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "driverregistration.php",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+
+            }
+        })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> map = new HashMap<>();
+
+                return map;
+            }
+        };
+
+        //Toast.makeText(DetailsActivity.this, "Request to be send on server", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(DetailsActivity.this, Home.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     private boolean validateFields() {
