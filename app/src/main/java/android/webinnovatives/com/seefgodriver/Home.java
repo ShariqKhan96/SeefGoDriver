@@ -241,7 +241,7 @@ public class Home extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        callService();
+       // callService();
 
         // Add a marker in Sydney and move the camera
         if (ConstantManager.CURRENT_LATLNG == null) {

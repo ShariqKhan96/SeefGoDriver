@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class ConstantManager {
     public static final String ID="ID";
     public static final String EMAIL="EMAIL";
+    public static final String CNIC="CNIC";
     public static final String NAME="NAME";
     public static final String PASSWORD="PASSWORD";
     public static final String SHARED_PREFERENCES="SHARED_PREFERENCES";

@@ -57,24 +57,7 @@
                 />
         </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:textColorHint="@color/hintColor">
 
-            <EditText
-                android:id="@+id/vehicle_registration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/textColor"
-                android:hint="Vehicle registration no"
-                android:inputType="text"
-                android:textColor="@color/textColor"
-                android:textSize="18sp"
-
-                />
-        </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

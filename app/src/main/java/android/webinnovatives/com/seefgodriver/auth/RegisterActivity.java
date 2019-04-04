@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.webinnovatives.com.seefgodriver.Home;
@@ -32,7 +33,9 @@ public class RegisterActivity extends AppCompatActivity {
                 if (checkForEmptyFields(emailET.getText().toString().trim(), passwordET.getText().toString().trim(), userNameET.getText().toString().trim())) {
                     if (checkValidEmail(emailET.getText().toString().trim())) {
                         if (checkValidPassword(passwordET.getText().toString().trim())) {
-                            Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), userNameET.getText().toString(),RegisterActivity.this);
+                            String email = emailET.getText().toString();
+                            Log.e("Email", email);
+                            Common.savePrefs(email, passwordET.getText().toString(), userNameET.getText().toString(),RegisterActivity.this);
                             startActivity(new Intent(RegisterActivity.this, DetailsActivity.class));
                             finish();
                         } else {
