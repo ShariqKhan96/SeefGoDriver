@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
 //                            Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), "Dummy", LoginActivity.this);
 //                            startActivity(new Intent(LoginActivity.this, Home.class));
 //                            finish();
-                              callService();
+                            callService();
 
 
                         } else {
@@ -97,6 +97,8 @@ public class LoginActivity extends AppCompatActivity {
 
                         try {
                             JSONObject root = new JSONObject(response);
+                            Log.e("RESPONSE", root.toString());
+
                             if (root.getString("status").equals("1")) {
                                 Driver user = new Gson().fromJson(root.getJSONObject("user").toString(), Driver.class);
                                 Paper.book().write(ConstantManager.CURRENT_USER, user);
@@ -126,8 +128,8 @@ public class LoginActivity extends AppCompatActivity {
                 return map;
             }
         };
-        Volley.newRequestQueue(LoginActivity.this).add(stringRequest);
-        //VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+        // Volley.newRequestQueue(LoginActivity.this).add(stringRequest);
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
 
     }
 

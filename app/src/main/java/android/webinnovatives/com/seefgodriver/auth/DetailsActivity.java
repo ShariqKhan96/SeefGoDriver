@@ -78,7 +78,9 @@ public class DetailsActivity extends AppCompatActivity {
         );
         name = getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).getString(ConstantManager.NAME, "NULL");
         password = getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).getString(ConstantManager.PASSWORD, "NULL");
-        email = getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).getString("EMAIL", "NULL");
+        email = getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).getString(ConstantManager.EMAIL, "NULL");
+
+        Log.e("email", email);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,10 +180,11 @@ public class DetailsActivity extends AppCompatActivity {
                         dialog.dismiss();
                         try {
                             JSONObject root = new JSONObject(response);
+                            Log.e("Object", root.toString());
                             if (root.getString("status").equals("1")) {
                                 //User user = new Gson().fromJson(root.getJSONObject("user").toString(), User.class);
                                 //User user = new User("", )
-                                Driver user = new Driver(root.getString("id"), name, password, cnicVAR, licenseNoVAR, "null", email, root.getString("vehicle_id"), root.getString("status"));
+                                Driver user = new Driver(root.getString("id"), name, password, cnicVAR, licenseNoVAR, "null", email, vehicleTypeVAR, "0");
 
                                 Paper.book().write(ConstantManager.CURRENT_USER, user);
 

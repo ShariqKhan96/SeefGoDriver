@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.webinnovatives.com.seefgodriver.auth.LoginActivity;
 import android.webinnovatives.com.seefgodriver.common.Common;
 import android.webinnovatives.com.seefgodriver.common.ConstantManager;
+import android.webinnovatives.com.seefgodriver.drawer.ProfileActivity;
 import android.webinnovatives.com.seefgodriver.drawer.TaskActivity;
 import android.webinnovatives.com.seefgodriver.network.VolleySingleton;
 import android.webinnovatives.com.seefgodriver.services.LocationService;
@@ -251,6 +252,8 @@ public class Home extends AppCompatActivity
 //
 //        }
         else if (id == R.id.nav_profile) {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_help) {
             Toast.makeText(this, "TODO Later", Toast.LENGTH_SHORT).show();

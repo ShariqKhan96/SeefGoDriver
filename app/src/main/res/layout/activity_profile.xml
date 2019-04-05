@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
@@ -55,7 +55,7 @@
                 android:enabled="false"
                 android:hint="Name"
                 android:inputType="text"
-                android:textColor="@color/textColor"
+                android:textColor="@color/colorAccent"
                 android:textSize="18sp"
 
                 />
@@ -75,7 +75,7 @@
                 android:enabled="false"
                 android:hint="Email"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/textColor"
+                android:textColor="@color/colorAccent"
                 android:textSize="18sp"
 
                 />
@@ -95,7 +95,7 @@
                 android:enabled="false"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:textColor="@color/textColor"
+                android:textColor="@color/colorAccent"
                 android:textSize="18sp"
 
                 />
