@@ -7,12 +7,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.webinnovatives.com.seefgodriver.Home;
 import android.webinnovatives.com.seefgodriver.R;
 import android.webinnovatives.com.seefgodriver.common.Common;
 import android.webinnovatives.com.seefgodriver.common.ConstantManager;
+import android.webinnovatives.com.seefgodriver.models.Driver;
 import android.webinnovatives.com.seefgodriver.network.VolleySingleton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -24,9 +26,16 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.paperdb.Paper;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -51,10 +60,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (checkForEmptyFields(emailET.getText().toString().trim(), passwordET.getText().toString().trim())) {
                     if (checkValidEmail(emailET.getText().toString().trim())) {
                         if (checkValidPassword(passwordET.getText().toString().trim())) {
-                            Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), "Dummy", LoginActivity.this);
-                            startActivity(new Intent(LoginActivity.this, Home.class));
-                            finish();
-                          //  callService();
+//                            Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), "Dummy", LoginActivity.this);
+//                            startActivity(new Intent(LoginActivity.this, Home.class));
+//                            finish();
+                              callService();
 
 
                         } else {
@@ -86,20 +95,27 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         dialog.dismiss();
 
-//                        if (response.equals("1")) {
-//                            Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), "Dummy", LoginActivity.this);
-//                            startActivity(new Intent(LoginActivity.this, Home.class));
-//                            finish();
-//                        } else {
-//                            Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_LONG).show();
-//                        }
+                        try {
+                            JSONObject root = new JSONObject(response);
+                            if (root.getString("status").equals("1")) {
+                                Driver user = new Gson().fromJson(root.getJSONObject("user").toString(), Driver.class);
+                                Paper.book().write(ConstantManager.CURRENT_USER, user);
+                                Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), user.getDriver_name(), LoginActivity.this);
+                                startActivity(new Intent(LoginActivity.this, Home.class));
+                                finish();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "" + root.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            Log.e("JSONException", e.getMessage());
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         dialog.dismiss();
-                        Toast.makeText(LoginActivity.this, ""+error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "" + error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     }
                 }) {
             @Override
@@ -107,10 +123,11 @@ public class LoginActivity extends AppCompatActivity {
                 Map<String, String> map = new HashMap<>();
                 map.put("email", emailET.getText().toString());
                 map.put("pass", passwordET.getText().toString());
-            return map;
+                return map;
             }
         };
-        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+        Volley.newRequestQueue(LoginActivity.this).add(stringRequest);
+        //VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
 
     }
 

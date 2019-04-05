@@ -35,7 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
                         if (checkValidPassword(passwordET.getText().toString().trim())) {
                             String email = emailET.getText().toString();
                             Log.e("Email", email);
-                            Common.savePrefs(email, passwordET.getText().toString(), userNameET.getText().toString(),RegisterActivity.this);
+                            //Common.savePrefs(email, passwordET.getText().toString(), userNameET.getText().toString(),RegisterActivity.this);
                             startActivity(new Intent(RegisterActivity.this, DetailsActivity.class));
                             finish();
                         } else {

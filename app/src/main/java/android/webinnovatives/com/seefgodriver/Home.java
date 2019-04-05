@@ -3,6 +3,7 @@ package android.webinnovatives.com.seefgodriver;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -26,6 +28,7 @@ import android.view.MenuItem;
 import android.webinnovatives.com.seefgodriver.auth.LoginActivity;
 import android.webinnovatives.com.seefgodriver.common.Common;
 import android.webinnovatives.com.seefgodriver.common.ConstantManager;
+import android.webinnovatives.com.seefgodriver.drawer.TaskActivity;
 import android.webinnovatives.com.seefgodriver.network.VolleySingleton;
 import android.webinnovatives.com.seefgodriver.services.LocationService;
 import android.widget.TextView;
@@ -96,7 +99,7 @@ public class Home extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        checkForPermissions();
+       // checkForPermissions();
     }
 
     private void checkForPermissions() {
@@ -206,10 +209,28 @@ public class Home extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Common.resetPrefs(this);
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+            builder.setTitle("Confirmation");
+            builder.setMessage("Are you sure?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Common.resetPrefs(Home.this);
+                    Intent intent = new Intent(Home.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    ;
+                }
+            });
+            builder.show();
+
             return true;
         }
 
@@ -223,12 +244,20 @@ public class Home extends AppCompatActivity
         int id = item.getItemId();
         if (id == R.id.nav_packages) {
             // Handle the camera action
-        } else if (id == R.id.nav_notificaitons) {
-
-        } else if (id == R.id.nav_profile) {
+            Intent intent = new Intent(this, TaskActivity.class);
+            startActivity(intent);
+        }
+//        else if (id == R.id.nav_notificaitons) {
+//
+//        }
+        else if (id == R.id.nav_profile) {
 
         } else if (id == R.id.nav_help) {
+            Toast.makeText(this, "TODO Later", Toast.LENGTH_SHORT).show();
 
+        }else if(id == R.id.nav_earning)
+        {
+            Toast.makeText(this, "TODO Later", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -244,6 +273,7 @@ public class Home extends AppCompatActivity
        // callService();
 
         // Add a marker in Sydney and move the camera
+
         if (ConstantManager.CURRENT_LATLNG == null) {
             final ProgressDialog dialog = new ProgressDialog(Home.this);
             dialog.setTitle("Please Wait");
@@ -255,12 +285,31 @@ public class Home extends AppCompatActivity
                 @Override
                 public void run() {
                     dialog.dismiss();
-                    LatLng sydney = new LatLng(ConstantManager.CURRENT_LATLNG.latitude, ConstantManager.CURRENT_LATLNG.longitude);
-                    mMap.addMarker(new MarkerOptions().position(sydney).title("You"));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12.0f));
+                    if (ConstantManager.CURRENT_LATLNG == null) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                        builder.setTitle("Warning");
+                        int permission = ContextCompat.checkSelfPermission(Home.this, Manifest.permission.ACCESS_FINE_LOCATION);
+                        if (permission == PackageManager.PERMISSION_GRANTED)
+                            builder.setMessage("App will misbehave due to denial of requested permissions completely!");
+                        else builder.setMessage("Slow internet connection");
+                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                        builder.show();
+
+                    } else {
+
+                        LatLng sydney = new LatLng(ConstantManager.CURRENT_LATLNG.latitude, ConstantManager.CURRENT_LATLNG.longitude);
+                        mMap.addMarker(new MarkerOptions().position(sydney).title("You"));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12.0f));
+                    }
 
                 }
-            }, 1500);
+            }, 0);
         } else {
             LatLng sydney = new LatLng(ConstantManager.CURRENT_LATLNG.latitude, ConstantManager.CURRENT_LATLNG.longitude);
             mMap.addMarker(new MarkerOptions().position(sydney).title("You"));

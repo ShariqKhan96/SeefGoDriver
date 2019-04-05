@@ -6,13 +6,13 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_packages"
-            android:icon="@drawable/parcel"
-            android:title="Parcel History" />
+            android:icon="@drawable/task"
+            android:title="My Tasks" />
 
-        <item
-            android:id="@+id/nav_notificaitons"
-            android:icon="@drawable/notifications"
-            android:title="My Notifications" />
+        <!--<item-->
+            <!--android:id="@+id/nav_notificaitons"-->
+            <!--android:icon="@drawable/notifications"-->
+            <!--android:title="My Notifications" />-->
 
         <item
             android:id="@+id/nav_profile"
@@ -22,6 +22,10 @@
             android:id="@+id/nav_help"
             android:icon="@drawable/help"
             android:title="Help" />
+        <item
+            android:id="@+id/nav_earning"
+            android:icon="@drawable/wallet"
+            android:title="My Earnings" />
     </group>
 
 

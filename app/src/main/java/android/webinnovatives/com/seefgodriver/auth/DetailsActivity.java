@@ -7,10 +7,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.webinnovatives.com.seefgodriver.Home;
 import android.webinnovatives.com.seefgodriver.R;
+import android.webinnovatives.com.seefgodriver.common.Common;
 import android.webinnovatives.com.seefgodriver.common.ConstantManager;
+import android.webinnovatives.com.seefgodriver.models.Driver;
 import android.webinnovatives.com.seefgodriver.models.Vehicle;
 import android.webinnovatives.com.seefgodriver.network.VolleySingleton;
 import android.widget.EditText;
@@ -19,10 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -34,6 +39,8 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.paperdb.Paper;
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -158,18 +165,36 @@ public class DetailsActivity extends AppCompatActivity {
         final ProgressDialog dialog = new ProgressDialog(DetailsActivity.this, R.style.MyAlertDialogStyle);
         dialog.setTitle("Registering");
         dialog.setMessage("Please Wait");
-        //dialog.show();
-        getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).edit().putString(ConstantManager.CNIC, cnicVAR).apply();
-        Intent intent = new Intent(DetailsActivity.this, Home.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
+        dialog.show();
+        //getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).edit().putString(ConstantManager.CNIC, cnicVAR).apply();
+//        Intent intent = new Intent(DetailsActivity.this, Home.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent);
+//        finish();
         StringRequest request = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "driverregistration.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         dialog.dismiss();
+                        try {
+                            JSONObject root = new JSONObject(response);
+                            if (root.getString("status").equals("1")) {
+                                //User user = new Gson().fromJson(root.getJSONObject("user").toString(), User.class);
+                                //User user = new User("", )
+                                Driver user = new Driver(root.getString("id"), name, password, cnicVAR, licenseNoVAR, "null", email, root.getString("vehicle_id"), root.getString("status"));
 
+                                Paper.book().write(ConstantManager.CURRENT_USER, user);
+
+                                Log.e("Wrote", Paper.book().read(ConstantManager.CURRENT_USER).toString());
+                                Common.savePrefs(email, password, name, DetailsActivity.this);
+                                startActivity(new Intent(DetailsActivity.this, Home.class));
+                                finish();
+                            } else {
+                                Toast.makeText(DetailsActivity.this, "" + root.getString("message"), Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            Log.e("JSONException", e.getMessage());
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -192,8 +217,13 @@ public class DetailsActivity extends AppCompatActivity {
                 return map;
             }
         };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                DefaultRetryPolicy.DEFAULT_TIMEOUT_MS * 3,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-     //   VolleySingleton.getInstance(this).addToRequestQueue(request);
+        Volley.newRequestQueue(DetailsActivity.this).add(request);
+        //VolleySingleton.getInstance(this).addToRequestQueue(request);
 
         //Toast.makeText(DetailsActivity.this, "Request to be send on server", Toast.LENGTH_SHORT).show();
 

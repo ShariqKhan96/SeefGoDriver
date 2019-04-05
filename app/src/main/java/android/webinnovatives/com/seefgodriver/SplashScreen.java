@@ -44,7 +44,7 @@ public class SplashScreen extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).getString(ConstantManager.CNIC, "null")
+                if (getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).getString(ConstantManager.EMAIL, "null")
                         .equals("null"))
                     startActivity(new Intent(SplashScreen.this, LoginActivity.class));
                 else startActivity(new Intent(SplashScreen.this, Home.class));
