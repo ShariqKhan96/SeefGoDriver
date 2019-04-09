@@ -2,6 +2,7 @@ package android.webinnovatives.com.seefgodriver.common;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 
 /**
  * Created by hp on 3/31/2019.
@@ -19,5 +20,10 @@ public class Common {
     public static void resetPrefs(Context context) {
         context.getSharedPreferences(ConstantManager.SHARED_PREFERENCES, Context.MODE_PRIVATE).edit().clear().apply();
 
+    }
+    public static boolean isConnected(Context context) {
+
+        ConnectivityManager conMgr = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        return conMgr.getActiveNetworkInfo() != null && conMgr.getActiveNetworkInfo().isAvailable() && conMgr.getActiveNetworkInfo().isConnected();
     }
 }

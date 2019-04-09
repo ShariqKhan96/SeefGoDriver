@@ -61,7 +61,7 @@ public class LocationService extends Service {
 
     private void requestLocationUpdates() {
         request = new LocationRequest();
-       // Random r = new Random();
+        // Random r = new Random();
         int intervalTime = ThreadLocalRandom.current().nextInt(10000, 20000);
         // int intervalTime = r.nextInt(7000 - 5000) + 5000;
         int fastestInterval = intervalTime - ThreadLocalRandom.current().nextInt(2000, 3000);
@@ -78,7 +78,6 @@ public class LocationService extends Service {
                 android.Manifest.permission.ACCESS_FINE_LOCATION);
 
 
-
         if (permission == PackageManager.PERMISSION_GRANTED) {
 
             client.requestLocationUpdates(request, new LocationCallback() {
@@ -88,15 +87,10 @@ public class LocationService extends Service {
                     locationCallback = this;
                     Location location = locationResult.getLastLocation();
                     Log.e(TAG, (location.getProvider()));
+
                     if (location != null) {
                         ConstantManager.CURRENT_LATLNG = new LatLng(location.getLatitude(), location.getLongitude());
                         Log.e(TAG, "location update " + ConstantManager.CURRENT_LATLNG.toString());
-//                        geoFire.setLocation("You", new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
-//                            @Override
-//                            public void onComplete(String key, DatabaseError error) {
-//                                Log.e("PushedValue", key);
-//                            }
-//                        });
 
                     }
                 }

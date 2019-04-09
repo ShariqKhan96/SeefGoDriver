@@ -44,12 +44,13 @@ import io.paperdb.Paper;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    EditText cnicET, vehicleTypeET, licenseNoET;
+    EditText cnicET, vehicleTypeET, licenseNoET, cityNameEt;
     FrameLayout submitBtn;
     String cnicVAR, vehicleTypeVAR, licenseNoVAR;
     String vehicleTypes[];
     String vehicleIds[];
-    String name, email, password;
+    String name, email, password, city;
+    String cities[] = {"Karachi", "Lahore", "Islamabad", "Peshawar", "Multan", "Gwadar"};
 
 
     @Override
@@ -59,6 +60,8 @@ public class DetailsActivity extends AppCompatActivity {
 
         getVehicleType();
         cnicET = findViewById(R.id.cnic);
+        cityNameEt = findViewById(R.id.city_name);
+
         vehicleTypeET = findViewById(R.id.vehicle_type);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -92,14 +95,11 @@ public class DetailsActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(DetailsActivity.this, "Invalid License Number", Toast.LENGTH_SHORT).show();
                         }
-
                     } else
                         Toast.makeText(DetailsActivity.this, "Invalid CNIC", Toast.LENGTH_SHORT).show();
-
                 } else {
                     Toast.makeText(DetailsActivity.this, "Some field(s) empty!", Toast.LENGTH_LONG).show();
                 }
-
             }
         });
 
@@ -119,6 +119,25 @@ public class DetailsActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+
+        cityNameEt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(DetailsActivity.this);
+                builder.setTitle("Select City");
+                builder.setItems(cities, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        cityNameEt.setText(cities[which]);
+                        city = cities[which];
+
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
 
     }
 
@@ -173,6 +192,7 @@ public class DetailsActivity extends AppCompatActivity {
 //        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 //        startActivity(intent);
 //        finish();
+
         StringRequest request = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "driverregistration.php",
                 new Response.Listener<String>() {
                     @Override
@@ -216,7 +236,7 @@ public class DetailsActivity extends AppCompatActivity {
                 map.put("token", "null");
                 map.put("license", licenseNoVAR);
                 map.put("vid", vehicleTypeVAR);
-                map.put("status", "0");
+                map.put("location", city);
                 return map;
             }
         };
@@ -233,11 +253,12 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private boolean validateFields() {
-        return !cnicVAR.isEmpty() && !vehicleTypeVAR.isEmpty() && !licenseNoVAR.isEmpty();
+        return !cnicVAR.isEmpty() && !vehicleTypeVAR.isEmpty() && !licenseNoVAR.isEmpty() && !city.isEmpty();
     }
 
     private void setFields() {
         cnicVAR = cnicET.getText().toString();
+
         // vehicleTypeVAR = vehicleTypeET.getText().toString();
         licenseNoVAR = licenseNoET.getText().toString();
     }

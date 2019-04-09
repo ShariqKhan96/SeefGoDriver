@@ -58,7 +58,6 @@
         </android.support.design.widget.TextInputLayout>
 
 
-
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,14 +78,34 @@
                 />
         </android.support.design.widget.TextInputLayout>
 
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textColorHint="@color/hintColor">
+
+            <EditText
+                android:id="@+id/city_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/textColor"
+                android:focusableInTouchMode="false"
+                android:hint="City"
+                android:inputType="text"
+                android:textColor="@color/textColor"
+                android:textSize="18sp"
+
+                />
+        </android.support.design.widget.TextInputLayout>
+
     </LinearLayout>
 
 
     <FrameLayout
-        android:layout_alignParentBottom="true"
         android:id="@+id/submit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_margin="30dp"
         android:background="@drawable/round_login_button"
         android:padding="11dp">

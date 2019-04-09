@@ -11,11 +11,12 @@ public class Task {
     public String weight_range;
     public String price_range;
     public String end_point;
+    public String status;
 
     public Task() {
     }
 
-    public Task(String package_name, String package_width, String package_height, String date_time, String start_point, String package_comment, String package_status, String weight_range, String price_range, String end_point) {
+    public Task(String package_name, String package_width, String package_height, String date_time, String start_point, String package_comment, String package_status, String weight_range, String price_range, String end_point, String status) {
         this.package_name = package_name;
         this.package_width = package_width;
         this.package_height = package_height;
@@ -26,7 +27,17 @@ public class Task {
         this.weight_range = weight_range;
         this.price_range = price_range;
         this.end_point = end_point;
+        this.status = status;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 
     public String getPackage_name() {
         return package_name;

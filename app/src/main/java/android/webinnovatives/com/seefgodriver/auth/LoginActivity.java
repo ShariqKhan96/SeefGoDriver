@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
                                 startActivity(new Intent(LoginActivity.this, Home.class));
                                 finish();
                             } else {
-                                Toast.makeText(LoginActivity.this, "" + root.getString("message"), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "" + "No user found with this credentials!", Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {
                             Log.e("JSONException", e.getMessage());

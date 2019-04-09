@@ -30,8 +30,13 @@ import android.webinnovatives.com.seefgodriver.common.Common;
 import android.webinnovatives.com.seefgodriver.common.ConstantManager;
 import android.webinnovatives.com.seefgodriver.drawer.ProfileActivity;
 import android.webinnovatives.com.seefgodriver.drawer.TaskActivity;
+import android.webinnovatives.com.seefgodriver.models.Driver;
+import android.webinnovatives.com.seefgodriver.models.Vehicle;
+import android.webinnovatives.com.seefgodriver.models.Warehouse;
 import android.webinnovatives.com.seefgodriver.network.VolleySingleton;
 import android.webinnovatives.com.seefgodriver.services.LocationService;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +45,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -55,6 +61,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -62,8 +74,12 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import io.paperdb.Paper;
 
 public class Home extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
@@ -72,7 +88,11 @@ public class Home extends AppCompatActivity
     private GoogleMap mMap;
     private static final int REQUEST_CHECK_SETTINGS = 1000;
     private TextView name;
+    Driver driver;
+    Switch aSwitch;
+    TextView userStatusTV;
     private TextView email;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +100,8 @@ public class Home extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        driver = Paper.book().read(ConstantManager.CURRENT_USER);
+        ;
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -92,6 +113,35 @@ public class Home extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         name = headerView.findViewById(R.id.name);
         email = headerView.findViewById(R.id.email);
+        aSwitch = findViewById(R.id.user_status);
+        userStatusTV = findViewById(R.id.status_TV);
+
+        updateTokenToServer(FirebaseInstanceId.getInstance().getInstanceId());
+
+
+        boolean switchStatus = getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).getBoolean("status", true);
+        if (switchStatus) {
+            aSwitch.setChecked(true);
+            userStatusTV.setText("Online");
+        } else {
+            userStatusTV.setText("Offline");
+            aSwitch.setChecked(false);
+        }
+
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    updateStatusToServer(1);
+                    getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).edit().putBoolean("status", true).apply();
+                    userStatusTV.setText("Online");
+                } else {
+                    updateStatusToServer(0);
+                    getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).edit().putBoolean("status", false).apply();
+                    userStatusTV.setText("Offline");
+                }
+            }
+        });
 
         name.setText(getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).getString(ConstantManager.NAME, "Shariq Khan"));
         email.setText(getSharedPreferences(ConstantManager.SHARED_PREFERENCES, MODE_PRIVATE).getString(ConstantManager.EMAIL, "Shariqmack@gmail.com"));
@@ -100,7 +150,70 @@ public class Home extends AppCompatActivity
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-       // checkForPermissions();
+        // checkForPermissions();
+    }
+
+    private void updateTokenToServer(Task<InstanceIdResult> instanceIdResultTask) {
+        instanceIdResultTask.addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (task.isSuccessful()) {
+                    final String token = task.getResult().getToken();
+                    StringRequest request = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "drivertoken.php", new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.e("RESPONSE :", response);
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(Home.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }) {
+                        @Override
+                        protected Map<String, String> getParams() throws AuthFailureError {
+                            Map<String, String> map = new HashMap<>();
+                            map.put("id", driver.getDriver_id());
+                            map.put("token", token);
+                            return map;
+                        }
+                    };
+                    Volley.newRequestQueue(Home.this).add(request);
+                } else {
+                    Log.e("TOKEN :", task.toString());
+                }
+            }
+        });
+
+
+    }
+
+    private void updateStatusToServer(final int status) {
+
+        final String id = driver.getDriver_id();
+
+        StringRequest request = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "driverstatus.php", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.e("RESPONSE :", response);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("ERROR :", error.getMessage());
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> map = new HashMap<>();
+                map.put("status", status + "");
+                map.put("id", id);
+                return map;
+            }
+        };
+        Volley.newRequestQueue(Home.this).add(request);
     }
 
     private void checkForPermissions() {
@@ -258,8 +371,7 @@ public class Home extends AppCompatActivity
         } else if (id == R.id.nav_help) {
             Toast.makeText(this, "TODO Later", Toast.LENGTH_SHORT).show();
 
-        }else if(id == R.id.nav_earning)
-        {
+        } else if (id == R.id.nav_earning) {
             Toast.makeText(this, "TODO Later", Toast.LENGTH_SHORT).show();
         }
 
@@ -273,51 +385,57 @@ public class Home extends AppCompatActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-       // callService();
+        callService();
 
         // Add a marker in Sydney and move the camera
 
-        if (ConstantManager.CURRENT_LATLNG == null) {
-            final ProgressDialog dialog = new ProgressDialog(Home.this);
-            dialog.setTitle("Please Wait");
-            dialog.setMessage("Getting your location");
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    dialog.dismiss();
-                    if (ConstantManager.CURRENT_LATLNG == null) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
-                        builder.setTitle("Warning");
-                        int permission = ContextCompat.checkSelfPermission(Home.this, Manifest.permission.ACCESS_FINE_LOCATION);
-                        if (permission == PackageManager.PERMISSION_GRANTED)
-                            builder.setMessage("App will misbehave due to denial of requested permissions completely!");
-                        else builder.setMessage("Slow internet connection");
-                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialog.dismiss();
-                            }
-                        });
+        if (Common.isConnected(this)) {
+            if (ConstantManager.CURRENT_LATLNG == null) {
+                final ProgressDialog dialog = new ProgressDialog(Home.this);
+                dialog.setTitle("Please Wait");
+                dialog.setMessage("Getting your location");
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
 
-                        builder.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                        if (ConstantManager.CURRENT_LATLNG == null) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Home.this);
+                            builder.setTitle("Warning");
+                            int permission = ContextCompat.checkSelfPermission(Home.this, Manifest.permission.ACCESS_FINE_LOCATION);
+                            if (permission == PackageManager.PERMISSION_GRANTED)
+                                builder.setMessage("App will misbehave due to denial of requested permissions completely!");
+                            else builder.setMessage("Slow internet connection");
+                            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialog.dismiss();
+                                }
+                            });
 
-                    } else {
+                            builder.show();
 
-                        LatLng sydney = new LatLng(ConstantManager.CURRENT_LATLNG.latitude, ConstantManager.CURRENT_LATLNG.longitude);
-                        mMap.addMarker(new MarkerOptions().position(sydney).title("You"));
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12.0f));
+                        } else {
+
+                            LatLng sydney = new LatLng(ConstantManager.CURRENT_LATLNG.latitude, ConstantManager.CURRENT_LATLNG.longitude);
+                            mMap.addMarker(new MarkerOptions().position(sydney).title("You"));
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12.0f));
+                        }
+
                     }
-
-                }
-            }, 0);
+                }, 0);
+            } else {
+                LatLng sydney = new LatLng(ConstantManager.CURRENT_LATLNG.latitude, ConstantManager.CURRENT_LATLNG.longitude);
+                mMap.addMarker(new MarkerOptions().position(sydney).title("You"));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12.0f));
+            }
         } else {
-            LatLng sydney = new LatLng(ConstantManager.CURRENT_LATLNG.latitude, ConstantManager.CURRENT_LATLNG.longitude);
-            mMap.addMarker(new MarkerOptions().position(sydney).title("You"));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12.0f));
+            Toast.makeText(this, "No internet! App won't work.", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private void callService() {
@@ -327,25 +445,38 @@ public class Home extends AppCompatActivity
         dialog.show();
 
 
-        StringRequest request = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "nearby_warehouses.php",
+        StringRequest request = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "nearby.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         dialog.dismiss();
+                        Gson gson = new Gson();
+                        Type listType = new TypeToken<List<Warehouse>>() {
+                        }.getType();
+                        List<Warehouse> warehouses = gson.fromJson(response, listType);
+
+
+                        if (warehouses.size() != 0) {
+                            for (Warehouse wareHouse : warehouses) {
+                                mMap.addMarker(new MarkerOptions().position(new LatLng(Double.parseDouble(wareHouse.getWarehouse_lat()), Double.parseDouble(wareHouse.getWarehouse_long()))).title(wareHouse.getWarehouse_name())).setSnippet(wareHouse.getWarehouse_address());
+                            }
+                        } else {
+                            Log.e("WAREHOUSES :", "SIZE 0");
+                        }
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-            dialog.dismiss();
-                Toast.makeText(Home.this, ""+error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+                Toast.makeText(Home.this, "" + error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> map = new HashMap<>();
-                map.put("lat", ConstantManager.CURRENT_LATLNG.latitude + "");
-                map.put("lng", ConstantManager.CURRENT_LATLNG.longitude + "");
+                Log.e("DRIVER_ID :", driver.getDriver_id());
+                map.put("id", driver.getDriver_id());
                 return map;
 
             }
