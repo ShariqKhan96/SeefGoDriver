@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webinnovatives.com.seefgodriver.R;
 import android.webinnovatives.com.seefgodriver.models.Notification;
+import android.webinnovatives.com.seefgodriver.models.Task;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -20,10 +21,10 @@ import java.util.List;
  */
 
 public class NotificaitonAdapter extends RecyclerView.Adapter<NotificaitonAdapter.MyVH> {
-    List<Notification> notifications = new ArrayList<>();
+    List<Task> notifications = new ArrayList<>();
     Context context;
 
-    public NotificaitonAdapter(List<Notification> notifications, Context context) {
+    public NotificaitonAdapter(List<Task> notifications, Context context) {
         this.notifications = notifications;
         this.context = context;
     }
@@ -36,17 +37,17 @@ public class NotificaitonAdapter extends RecyclerView.Adapter<NotificaitonAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyVH myVH, int i) {
-        final Notification notification = notifications.get(i);
+        final Task notification = notifications.get(i);
         myVH.price.setText(notification.getPrice());
-        myVH.source.setText("From: " + notification.getSource());
-        myVH.destination.setText("To: " + notification.getDestination());
-        myVH.date.setText(notification.getDate());
-        myVH.itemname.setText(notification.getName());
+        myVH.source.setText("From: " + notification.getStart_point());
+        myVH.destination.setText("To: " + notification.getEnd_point());
+        myVH.date.setText(notification.getDate_time());
+        myVH.itemname.setText(notification.getPackage_name());
 
         myVH.track_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                callService(notification.getId());
+//                callService(notification.getId());
             }
         });
         //myVH.status.setText(parcel.getStatus());

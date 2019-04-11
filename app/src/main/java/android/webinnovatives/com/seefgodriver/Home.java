@@ -28,6 +28,8 @@ import android.view.MenuItem;
 import android.webinnovatives.com.seefgodriver.auth.LoginActivity;
 import android.webinnovatives.com.seefgodriver.common.Common;
 import android.webinnovatives.com.seefgodriver.common.ConstantManager;
+import android.webinnovatives.com.seefgodriver.drawer.HelpActivity;
+import android.webinnovatives.com.seefgodriver.drawer.NotificationsActivity;
 import android.webinnovatives.com.seefgodriver.drawer.ProfileActivity;
 import android.webinnovatives.com.seefgodriver.drawer.TaskActivity;
 import android.webinnovatives.com.seefgodriver.models.Driver;
@@ -35,6 +37,7 @@ import android.webinnovatives.com.seefgodriver.models.Vehicle;
 import android.webinnovatives.com.seefgodriver.models.Warehouse;
 import android.webinnovatives.com.seefgodriver.network.VolleySingleton;
 import android.webinnovatives.com.seefgodriver.services.LocationService;
+import android.webinnovatives.com.seefgodriver.services.LocationUpdateProvider;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -151,6 +154,13 @@ public class Home extends AppCompatActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         // checkForPermissions();
+
+        switchServices();
+    }
+
+    private void switchServices() {
+        stopService(new Intent(this, LocationService.class));
+        startService(new Intent(this, LocationUpdateProvider.class));
     }
 
     private void updateTokenToServer(Task<InstanceIdResult> instanceIdResultTask) {
@@ -159,6 +169,8 @@ public class Home extends AppCompatActivity
             public void onComplete(@NonNull Task<InstanceIdResult> task) {
                 if (task.isSuccessful()) {
                     final String token = task.getResult().getToken();
+
+                    Log.e("TOKEN:", task.getResult().getToken() + " to be updated!");
                     StringRequest request = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "drivertoken.php", new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -180,7 +192,7 @@ public class Home extends AppCompatActivity
                     };
                     Volley.newRequestQueue(Home.this).add(request);
                 } else {
-                    Log.e("TOKEN :", task.toString());
+                    Log.e("TOKENFailed :", task.getException().getMessage());
                 }
             }
         });
@@ -369,10 +381,11 @@ public class Home extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_help) {
-            Toast.makeText(this, "TODO Later", Toast.LENGTH_SHORT).show();
-
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_earning) {
-            Toast.makeText(this, "TODO Later", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, NotificationsActivity.class);
+            startActivity(intent);
         }
 
 

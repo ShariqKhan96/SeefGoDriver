@@ -9,13 +9,10 @@ import com.google.firebase.messaging.FirebaseMessagingService;
  */
 
 public class FBMessagingService extends FirebaseMessagingService {
-
-
-
-
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
         Log.e("NEW_TOKEN :", s);
     }
+
 }

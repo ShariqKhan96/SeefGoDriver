@@ -73,11 +73,11 @@ public class TaskActivity extends AppCompatActivity {
 
     private void getList() {
         final ProgressDialog dialog = new ProgressDialog(TaskActivity.this, R.style.MyAlertDialogStyle);
-        dialog.setTitle("Getting parcels");
+        dialog.setTitle("Getting Tasks");
         dialog.setMessage("Please Wait");
         dialog.show();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "userhistory.php",
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "driverhistory.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -89,7 +89,7 @@ public class TaskActivity extends AppCompatActivity {
                                 Type listType = new TypeToken<List<Task>>() {
                                 }.getType();
                                 List<Task> parcels = gson.fromJson(response, listType);
-                                parcelList.setAdapter(new TaskAdapter(parcels, TaskActivity.this));
+                                parcelList.setAdapter(new TaskAdapter(parcels, TaskActivity.this, user.getDriver_id()));
 
                             } else {
                                 no_records.setVisibility(View.VISIBLE);
