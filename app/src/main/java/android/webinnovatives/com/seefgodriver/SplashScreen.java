@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -31,12 +32,12 @@ public class SplashScreen extends AppCompatActivity {
 
     ;
     private static final int REQUEST = 100;
-    private static final int REQUEST_CHECK_SETTINGS = 1000;
+    private static final int REQUEST_CHECK_SETTINGS = 1;
 
     @Override
     protected void onStart() {
         super.onStart();
-       // checkSession();
+        // checkSession();
     }
 
     private void checkSession() {
@@ -111,10 +112,14 @@ public class SplashScreen extends AppCompatActivity {
                 final Status status = result.getStatus();
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
+                        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                        boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
                         Log.e("Here Success", "All location settings are satisfied.");
                         Intent intent = new Intent(SplashScreen.this, LocationService.class);
                         startService(intent);
                         checkSession();
+                        Log.e("status", statusOfGPS + "");
+
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         Log.e(Home.class.getSimpleName(), "Location settings are not satisfied. Show the user a dialog to upgrade location settings ");
@@ -138,8 +143,10 @@ public class SplashScreen extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("ResultCODE", resultCode + " " + requestCode);
         if (resultCode == RESULT_OK && requestCode == REQUEST_CHECK_SETTINGS) {
-            Toast.makeText(this, "Location on", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Location on", Toast.LENGTH_SHORT).show();
+            startService(new Intent(SplashScreen.this, LocationService.class));
             checkSession();
         }
     }

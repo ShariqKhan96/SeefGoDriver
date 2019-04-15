@@ -103,52 +103,26 @@
 
                 />
 
-            <LinearLayout
-                android:id="@+id/clock_btns_layout"
+
+            <FrameLayout
+                android:id="@+id/accept_task"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="visible"
-                android:weightSum="2">
+                android:layout_margin="8dp"
+                android:background="@color/acceptColor"
+                android:padding="10dp"
+                android:visibility="visible">
 
-                <FrameLayout
-                    android:id="@+id/start_task"
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    android:background="@color/disable"
-                    android:padding="10dp">
+                    android:layout_gravity="center"
+                    android:text="Accept Task"
+                    android:textColor="@color/textColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Start"
-                        android:textColor="@color/textColor"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/end_task"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:layout_weight="1"
-                    android:background="@color/disable"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="End"
-                        android:textColor="@color/textColor"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </FrameLayout>
-            </LinearLayout>
         </LinearLayout>
 
 

@@ -30,6 +30,7 @@ import android.webinnovatives.com.seefgodriver.common.Common;
 import android.webinnovatives.com.seefgodriver.common.ConstantManager;
 import android.webinnovatives.com.seefgodriver.drawer.HelpActivity;
 import android.webinnovatives.com.seefgodriver.drawer.NotificationsActivity;
+import android.webinnovatives.com.seefgodriver.drawer.OpportunitiesActivity;
 import android.webinnovatives.com.seefgodriver.drawer.ProfileActivity;
 import android.webinnovatives.com.seefgodriver.drawer.TaskActivity;
 import android.webinnovatives.com.seefgodriver.models.Driver;
@@ -370,12 +371,13 @@ public class Home extends AppCompatActivity
         int id = item.getItemId();
         if (id == R.id.nav_packages) {
             // Handle the camera action
+            Intent intent = new Intent(this, OpportunitiesActivity.class);
+            startActivity(intent);
+        }
+        else if (id == R.id.nav_notificaitons) {
             Intent intent = new Intent(this, TaskActivity.class);
             startActivity(intent);
         }
-//        else if (id == R.id.nav_notificaitons) {
-//
-//        }
         else if (id == R.id.nav_profile) {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);

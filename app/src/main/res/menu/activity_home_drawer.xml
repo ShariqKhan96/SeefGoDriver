@@ -6,13 +6,13 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_packages"
+            android:icon="@drawable/newjob"
+            android:title="My Opportunities" />
+
+        <item
+            android:id="@+id/nav_notificaitons"
             android:icon="@drawable/task"
             android:title="My Tasks" />
-
-        <!--<item-->
-            <!--android:id="@+id/nav_notificaitons"-->
-            <!--android:icon="@drawable/notifications"-->
-            <!--android:title="My Notifications" />-->
 
         <item
             android:id="@+id/nav_profile"

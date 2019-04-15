@@ -76,7 +76,7 @@ public class HelpActivity extends AppCompatActivity {
                         if (ContextCompat.checkSelfPermission(HelpActivity.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
 
                             Intent callIntent = new Intent(Intent.ACTION_CALL);
-                            callIntent.setData(Uri.parse("tel:123456789"));
+                            callIntent.setData(Uri.parse("tel:03330250013"));
                             startActivity(callIntent);
                         } else requestPermission();
                     }

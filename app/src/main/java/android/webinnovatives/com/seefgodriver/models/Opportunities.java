@@ -1,37 +1,39 @@
 package android.webinnovatives.com.seefgodriver.models;
 
-public class Task {
+/**
+ * Created by hp on 4/14/2019.
+ */
+
+public class Opportunities {
+
+    public String package_id;
     public String package_name;
     public String package_width;
+    public String package_price;
     public String package_height;
     public String date_time;
     public String start_point;
     public String package_comment;
-    public String package_status;
     public String weight_range;
     public String price_range;
-    public String warehouse_name;
-    public String status;
-    public String package_id;
+    public String end_point;
 
 
-    public Task() {
+    public Opportunities() {
     }
 
-    public Task(String package_name, String package_width, String package_height, String date_time, String start_point, String package_comment, String package_status, String weight_range, String price_range, String end_point, String status, String package_id) {
+    public Opportunities(String package_id, String package_name, String package_width, String package_price, String package_height, String date_time, String start_point, String package_comment, String weight_range, String price_range, String end_point) {
+        this.package_id = package_id;
         this.package_name = package_name;
         this.package_width = package_width;
+        this.package_price = package_price;
         this.package_height = package_height;
         this.date_time = date_time;
         this.start_point = start_point;
         this.package_comment = package_comment;
-        this.package_status = package_status;
         this.weight_range = weight_range;
         this.price_range = price_range;
-        this.warehouse_name = end_point;
-        this.status = status;
-        this.package_id = package_id;
-
+        this.end_point = end_point;
     }
 
     public String getPackage_id() {
@@ -41,15 +43,6 @@ public class Task {
     public void setPackage_id(String package_id) {
         this.package_id = package_id;
     }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
 
     public String getPackage_name() {
         return package_name;
@@ -65,6 +58,14 @@ public class Task {
 
     public void setPackage_width(String package_width) {
         this.package_width = package_width;
+    }
+
+    public String getPackage_price() {
+        return package_price;
+    }
+
+    public void setPackage_price(String package_price) {
+        this.package_price = package_price;
     }
 
     public String getPackage_height() {
@@ -99,14 +100,6 @@ public class Task {
         this.package_comment = package_comment;
     }
 
-    public String getPackage_status() {
-        return package_status;
-    }
-
-    public void setPackage_status(String package_status) {
-        this.package_status = package_status;
-    }
-
     public String getWeight_range() {
         return weight_range;
     }
@@ -123,12 +116,11 @@ public class Task {
         this.price_range = price_range;
     }
 
-    public String getWarehouse_name() {
-        return warehouse_name;
+    public String getEnd_point() {
+        return end_point;
     }
 
-    public void setWarehouse_name(String warehouse_name) {
-        this.warehouse_name = warehouse_name;
+    public void setEnd_point(String end_point) {
+        this.end_point = end_point;
     }
 }
-

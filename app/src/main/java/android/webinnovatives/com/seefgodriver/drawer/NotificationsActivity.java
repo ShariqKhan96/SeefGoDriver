@@ -9,10 +9,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.webinnovatives.com.seefgodriver.R;
+import android.webinnovatives.com.seefgodriver.adapters.EarningAdapter;
 import android.webinnovatives.com.seefgodriver.adapters.NotificaitonAdapter;
 import android.webinnovatives.com.seefgodriver.adapters.TaskAdapter;
 import android.webinnovatives.com.seefgodriver.common.ConstantManager;
 import android.webinnovatives.com.seefgodriver.models.Driver;
+import android.webinnovatives.com.seefgodriver.models.Earning;
 import android.webinnovatives.com.seefgodriver.models.Notification;
 import android.webinnovatives.com.seefgodriver.models.Task;
 import android.webinnovatives.com.seefgodriver.network.VolleySingleton;
@@ -88,10 +90,10 @@ public class NotificationsActivity extends AppCompatActivity {
                             JSONArray array = new JSONArray(response);
                             if (array.length() > 0) {
                                 Gson gson = new Gson();
-                                Type listType = new TypeToken<List<Task>>() {
+                                Type listType = new TypeToken<List<Earning>>() {
                                 }.getType();
-                                List<Task> parcels = gson.fromJson(response, listType);
-                                notificationsList.setAdapter(new NotificaitonAdapter(parcels, NotificationsActivity.this));
+                                List<Earning> parcels = gson.fromJson(response, listType);
+                                notificationsList.setAdapter(new EarningAdapter(parcels, NotificationsActivity.this));
 
                             } else {
                                 no_records.setVisibility(View.VISIBLE);

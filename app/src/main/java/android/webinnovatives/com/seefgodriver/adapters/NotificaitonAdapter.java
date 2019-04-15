@@ -36,11 +36,16 @@ public class NotificaitonAdapter extends RecyclerView.Adapter<NotificaitonAdapte
     }
 
     @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+
+    @Override
     public void onBindViewHolder(@NonNull MyVH myVH, int i) {
         final Task notification = notifications.get(i);
-        myVH.price.setText(notification.getPrice());
         myVH.source.setText("From: " + notification.getStart_point());
-        myVH.destination.setText("To: " + notification.getEnd_point());
+        myVH.destination.setText("To: " + notification.getWarehouse_name());
         myVH.date.setText(notification.getDate_time());
         myVH.itemname.setText(notification.getPackage_name());
 

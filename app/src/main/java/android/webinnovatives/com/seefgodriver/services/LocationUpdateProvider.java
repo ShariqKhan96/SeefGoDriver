@@ -74,7 +74,7 @@ public class LocationUpdateProvider extends Service {
 
         request.setFastestInterval(fastestInterval);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        request.setSmallestDisplacement(10f);
+        //request.setSmallestDisplacement(10f);
         client = LocationServices.getFusedLocationProviderClient(this);
 
 

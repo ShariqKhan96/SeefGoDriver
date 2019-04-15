@@ -1,23 +1,24 @@
 package android.webinnovatives.com.seefgodriver.drawer;
 
 import android.app.ProgressDialog;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.webinnovatives.com.seefgodriver.R;
+import android.webinnovatives.com.seefgodriver.adapters.OpportunitiesAdapter;
 import android.webinnovatives.com.seefgodriver.adapters.TaskAdapter;
 import android.webinnovatives.com.seefgodriver.common.ConstantManager;
 import android.webinnovatives.com.seefgodriver.models.Driver;
+import android.webinnovatives.com.seefgodriver.models.Opportunities;
 import android.webinnovatives.com.seefgodriver.models.Task;
 import android.webinnovatives.com.seefgodriver.network.VolleySingleton;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -39,7 +40,7 @@ import java.util.Map;
 
 import io.paperdb.Paper;
 
-public class TaskActivity extends AppCompatActivity {
+public class OpportunitiesActivity extends AppCompatActivity {
 
     RecyclerView parcelList;
     List<Task> parcels = new ArrayList<>();
@@ -51,10 +52,11 @@ public class TaskActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parcels);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         TextView toolbarTv = toolbar.findViewById(R.id.toolbarText);
-        toolbarTv.setText("My Tasks");
+        toolbarTv.setText("My Opportunities");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -69,16 +71,15 @@ public class TaskActivity extends AppCompatActivity {
         parcelList.setLayoutManager(new LinearLayoutManager(this));
         getList();
 
-
     }
 
     private void getList() {
-        final ProgressDialog dialog = new ProgressDialog(TaskActivity.this, R.style.MyAlertDialogStyle);
-        dialog.setTitle("Getting Tasks");
+        final ProgressDialog dialog = new ProgressDialog(OpportunitiesActivity.this, R.style.MyAlertDialogStyle);
+        dialog.setTitle("Getting Opportunities");
         dialog.setMessage("Please Wait");
         dialog.show();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "driveraccepted.php",
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "driveropportunities.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -88,10 +89,10 @@ public class TaskActivity extends AppCompatActivity {
 
                             if (array.length() > 0) {
                                 Gson gson = new Gson();
-                                Type listType = new TypeToken<List<Task>>() {
+                                Type listType = new TypeToken<List<Opportunities>>() {
                                 }.getType();
-                                List<Task> parcels = gson.fromJson(response, listType);
-                                parcelList.setAdapter(new TaskAdapter(parcels, TaskActivity.this, user.getDriver_id()));
+                                List<Opportunities> parcels = gson.fromJson(response, listType);
+                                parcelList.setAdapter(new OpportunitiesAdapter(parcels, OpportunitiesActivity.this));
 
                             } else {
                                 no_records.setVisibility(View.VISIBLE);
@@ -107,7 +108,7 @@ public class TaskActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         dialog.dismiss();
-                        Toast.makeText(TaskActivity.this, "" + error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(OpportunitiesActivity.this, "" + error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     }
                 }) {
             @Override
