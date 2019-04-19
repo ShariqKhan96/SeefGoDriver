@@ -61,7 +61,7 @@ public class OpportunitiesAdapter extends RecyclerView.Adapter<OpportunitiesAdap
 
         Opportunities parcel = notifications.get(i);
 
-        myVH.price.setText(parcel.getPrice_range());
+        myVH.price.setText(parcel.getPackage_price());
         myVH.source.setText("From: " + parcel.getStart_point());
         myVH.destination.setText("To: " + parcel.getEnd_point());
         myVH.date.setText(parcel.getDate_time());

@@ -10,50 +10,30 @@
         layout="@layout/toolbar" />
 
 
-    <LinearLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <ImageView
         android:layout_below="@+id/toolbar"
-        android:layout_margin="20dp"
-        android:weightSum="2">
-
-        <ImageView
-            android:id="@+id/email"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:layout_weight="1"
-            android:background="@color/colorAccent"
-            android:padding="5dp"
-            android:src="@drawable/email"
-            android:tint="@color/textColor"
-
-
-            />
-
-        <ImageView
-            android:id="@+id/phone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_weight="1"
-            android:background="@color/colorAccent"
-            android:padding="5dp"
-            android:src="@drawable/phone"
-            android:tint="@color/textColor"
+        android:id="@+id/phone"
+        android:layout_width="150dp"
+        android:layout_height="70dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:background="@color/colorAccent"
+        android:padding="5dp"
+        android:src="@drawable/phone"
+        android:tint="@color/textColor"
 
 
-            />
+        />
 
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/email_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/header"
+        android:layout_below="@+id/phone"
         android:layout_margin="20dp"
 
         android:orientation="vertical">

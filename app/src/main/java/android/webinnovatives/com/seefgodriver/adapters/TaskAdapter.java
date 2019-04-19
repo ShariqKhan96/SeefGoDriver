@@ -65,7 +65,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyVH> {
     @Override
     public void onBindViewHolder(@NonNull final MyVH myVH, int i) {
         final Task parcel = parcels.get(i);
-        myVH.price.setText(parcel.getPrice_range());
+        myVH.price.setText(parcel.getPackage_price());
         myVH.source.setText("From: " + parcel.getStart_point());
         myVH.destination.setText("Destination: " + parcel.getWarehouse_name());
         myVH.date.setText(parcel.getDate_time());
