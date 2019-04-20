@@ -33,6 +33,7 @@ import android.webinnovatives.com.seefgodriver.drawer.NotificationsActivity;
 import android.webinnovatives.com.seefgodriver.drawer.OpportunitiesActivity;
 import android.webinnovatives.com.seefgodriver.drawer.ProfileActivity;
 import android.webinnovatives.com.seefgodriver.drawer.TaskActivity;
+import android.webinnovatives.com.seefgodriver.interfaces.ProfileCredentialsChangedListener;
 import android.webinnovatives.com.seefgodriver.models.Driver;
 import android.webinnovatives.com.seefgodriver.models.Vehicle;
 import android.webinnovatives.com.seefgodriver.models.Warehouse;
@@ -86,7 +87,7 @@ import java.util.Map;
 import io.paperdb.Paper;
 
 public class Home extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, ProfileCredentialsChangedListener {
 
     private static final int REQUEST = 100;
     private GoogleMap mMap;
@@ -96,6 +97,7 @@ public class Home extends AppCompatActivity
     Switch aSwitch;
     TextView userStatusTV;
     private TextView email;
+    public static ProfileCredentialsChangedListener profileCredentialsChangedListener;
 
 
     @Override
@@ -119,6 +121,7 @@ public class Home extends AppCompatActivity
         email = headerView.findViewById(R.id.email);
         aSwitch = findViewById(R.id.user_status);
         userStatusTV = findViewById(R.id.status_TV);
+        profileCredentialsChangedListener = this;
 
         updateTokenToServer(FirebaseInstanceId.getInstance().getInstanceId());
 
@@ -373,12 +376,10 @@ public class Home extends AppCompatActivity
             // Handle the camera action
             Intent intent = new Intent(this, OpportunitiesActivity.class);
             startActivity(intent);
-        }
-        else if (id == R.id.nav_notificaitons) {
+        } else if (id == R.id.nav_notificaitons) {
             Intent intent = new Intent(this, TaskActivity.class);
             startActivity(intent);
-        }
-        else if (id == R.id.nav_profile) {
+        } else if (id == R.id.nav_profile) {
             Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
 
@@ -500,4 +501,10 @@ public class Home extends AppCompatActivity
         VolleySingleton.getInstance(this).addToRequestQueue(request);
     }
 
+    @Override
+    public void onChanged() {
+        Driver driver = Paper.book().read(ConstantManager.CURRENT_USER);
+        name.setText(driver.getDriver_name());
+        email.setText(driver.getDriver_email());
+    }
 }

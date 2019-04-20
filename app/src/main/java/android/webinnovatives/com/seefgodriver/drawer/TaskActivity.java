@@ -85,7 +85,6 @@ public class TaskActivity extends AppCompatActivity {
                         dialog.dismiss();
                         try {
                             JSONArray array = new JSONArray(response);
-
                             if (array.length() > 0) {
                                 Gson gson = new Gson();
                                 Type listType = new TypeToken<List<Task>>() {
