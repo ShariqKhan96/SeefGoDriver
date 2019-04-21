@@ -130,8 +130,10 @@ public class LoginActivity extends AppCompatActivity {
                             Log.e("RESPONSE", root.toString());
 
                             if (root.getString("status").equals("1")) {
+
                                 Driver user = new Gson().fromJson(root.getJSONObject("user").toString(), Driver.class);
                                 Paper.book().write(ConstantManager.CURRENT_USER, user);
+
 
 
                                 Driver mUser = new Driver();
@@ -141,6 +143,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
                                 Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), user.getDriver_name(), LoginActivity.this);
+
+                            //intent to jump from one screen to another
+
                                 startActivity(new Intent(LoginActivity.this, Home.class));
                                 finish();
                             } else {

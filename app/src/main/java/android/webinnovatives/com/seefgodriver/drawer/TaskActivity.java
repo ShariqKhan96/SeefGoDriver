@@ -2,6 +2,7 @@ package android.webinnovatives.com.seefgodriver.drawer;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +48,9 @@ public class TaskActivity extends AppCompatActivity {
     FrameLayout no_records;
     Driver user;
 
+    SwipeRefreshLayout swipe_layout;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +71,17 @@ public class TaskActivity extends AppCompatActivity {
         user = Paper.book().read(ConstantManager.CURRENT_USER);
         parcelList = findViewById(R.id.parcels_list);
         parcelList.setLayoutManager(new LinearLayoutManager(this));
+
+        swipe_layout = findViewById(R.id.swipe_layout);
+        int Colors[] = {android.R.color.holo_red_dark, android.R.color.holo_orange_light};
+        swipe_layout.setColorSchemeResources(Colors);
+
+        swipe_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getList();
+            }
+        });
         getList();
 
 
@@ -76,20 +91,24 @@ public class TaskActivity extends AppCompatActivity {
         final ProgressDialog dialog = new ProgressDialog(TaskActivity.this, R.style.MyAlertDialogStyle);
         dialog.setTitle("Getting Tasks");
         dialog.setMessage("Please Wait");
-        dialog.show();
+        // dialog.show();
+        swipe_layout.setRefreshing(true);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "driveraccepted.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        dialog.dismiss();
+                        //  dialog.dismiss();
+                        swipe_layout.setRefreshing(false);
                         try {
                             JSONArray array = new JSONArray(response);
                             if (array.length() > 0) {
+
                                 Gson gson = new Gson();
                                 Type listType = new TypeToken<List<Task>>() {
                                 }.getType();
                                 List<Task> parcels = gson.fromJson(response, listType);
+
                                 parcelList.setAdapter(new TaskAdapter(parcels, TaskActivity.this, user.getDriver_id()));
 
                             } else {
@@ -105,7 +124,8 @@ public class TaskActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        dialog.dismiss();
+                        //dialog.dismiss();
+                        swipe_layout.setRefreshing(false);
                         Toast.makeText(TaskActivity.this, "" + error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     }
                 }) {

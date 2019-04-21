@@ -2,6 +2,7 @@ package android.webinnovatives.com.seefgodriver.drawer;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -50,6 +51,8 @@ public class NotificationsActivity extends AppCompatActivity {
     FrameLayout no_records;
     Driver user;
 
+    SwipeRefreshLayout swipe_layout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +74,17 @@ public class NotificationsActivity extends AppCompatActivity {
         user = Paper.book().read(ConstantManager.CURRENT_USER);
         notificationsList = findViewById(R.id.parcels_list);
         notificationsList.setLayoutManager(new LinearLayoutManager(this));
+
+        swipe_layout = findViewById(R.id.swipe_layout);
+        int Colors[] = {android.R.color.holo_red_dark, android.R.color.holo_orange_light};
+        swipe_layout.setColorSchemeResources(Colors);
+
+        swipe_layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData();
+            }
+        });
         getData();
 
     }
@@ -79,14 +93,17 @@ public class NotificationsActivity extends AppCompatActivity {
         final ProgressDialog dialog = new ProgressDialog(NotificationsActivity.this, R.style.MyAlertDialogStyle);
         dialog.setTitle("Getting Earnings");
         dialog.setMessage("Please Wait");
-        dialog.show();
+        //  dialog.show();
+
+        swipe_layout.setRefreshing(true);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ConstantManager.BASE_URL + "drivercomplete.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        dialog.dismiss();
+                        //     dialog.dismiss();
                         try {
+                            swipe_layout.setRefreshing(false);
                             JSONArray array = new JSONArray(response);
                             if (array.length() > 0) {
                                 Gson gson = new Gson();
@@ -108,7 +125,8 @@ public class NotificationsActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        dialog.dismiss();
+                        swipe_layout.setRefreshing(false);
+                        //      dialog.dismiss();
                         Toast.makeText(NotificationsActivity.this, "" + error.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                     }
                 }) {

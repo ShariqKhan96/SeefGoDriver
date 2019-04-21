@@ -100,6 +100,7 @@ public class ProfileActivity extends AppCompatActivity implements EditButtonList
                                 dialog.dismiss();
                                 try {
                                     JSONObject root = new JSONObject(response);
+
                                     Toast.makeText(ProfileActivity.this, "" + root.getString("message"), Toast.LENGTH_SHORT).show();
                                     if (root.getString("status").equals("1")) {
                                         driver.setDriver_email(emailET.getText().toString());
