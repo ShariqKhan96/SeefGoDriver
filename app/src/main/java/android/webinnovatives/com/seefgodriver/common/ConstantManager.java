@@ -17,6 +17,9 @@ public class ConstantManager {
     public static final String SHARED_PREFERENCES="SHARED_PREFERENCES";
     public static final String CURRENT_USER="CURRENT_USER";
     public static final String DRIVER_DB_NAME = "SEEFDRIVERS";
+
+    public static final String REMEMBER_ME = "REMEMBER_ME";
+    public static final String USER_DECRYPTED_OBJECT = "DECRYPTED_OBJECT";
     public static String BASE_URL ="http://seefgo.webxert.com/android/";
 
 

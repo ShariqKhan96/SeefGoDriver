@@ -39,6 +39,7 @@ public class ProfileActivity extends AppCompatActivity implements EditButtonList
     ImageView edit;
     FrameLayout submit_btn;
     Driver driver;
+    Driver user_decrypted;
 
 
     @Override
@@ -47,6 +48,8 @@ public class ProfileActivity extends AppCompatActivity implements EditButtonList
         setContentView(R.layout.activity_profile);
         editButtonListener = this;
         driver = Paper.book().read(ConstantManager.CURRENT_USER);
+        user_decrypted = Paper.book().read(ConstantManager.USER_DECRYPTED_OBJECT);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         TextView toolbarTv = toolbar.findViewById(R.id.toolbarText);
@@ -65,9 +68,10 @@ public class ProfileActivity extends AppCompatActivity implements EditButtonList
         edit = toolbar.findViewById(R.id.edit);
         submit_btn = findViewById(R.id.submit_btn);
         Driver user = Paper.book().read(ConstantManager.CURRENT_USER);
+
         nameET.setText(user.getDriver_name());
         emailET.setText(user.getDriver_email());
-        passwordET.setText("(md5)=>" + user.getDriver_password());
+        passwordET.setText(user_decrypted.getDriver_password());
         submit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,10 +105,19 @@ public class ProfileActivity extends AppCompatActivity implements EditButtonList
                                         driver.setDriver_email(emailET.getText().toString());
                                         driver.setDriver_name(nameET.getText().toString());
                                         driver.setDriver_password(passwordET.getText().toString());
+                                        Paper.book().write(ConstantManager.USER_DECRYPTED_OBJECT, user_decrypted);
+
+
+                                        user_decrypted.setDriver_email(emailET.getText().toString());
+                                        user_decrypted.setDriver_password(passwordET.getText().toString());
+                                        Paper.book().delete(ConstantManager.USER_DECRYPTED_OBJECT);
+
 
                                         Paper.book().delete(ConstantManager.CURRENT_USER);
                                         Paper.book().write(ConstantManager.CURRENT_USER, driver);
                                         Home.profileCredentialsChangedListener.onChanged();
+
+                                        finish();
                                     }
                                 } catch (JSONException e) {
                                     Toast.makeText(ProfileActivity.this, "" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
@@ -124,7 +137,7 @@ public class ProfileActivity extends AppCompatActivity implements EditButtonList
                         Map<String, String> map = new HashMap<>();
                         map.put("name", nameET.getText().toString());
                         map.put("email", emailET.getText().toString());
-                        map.put("password", passwordET.getText().toString());
+                        map.put("pass", passwordET.getText().toString());
                         map.put("id", driver.getDriver_id());
                         map.put("check", 0 + "");
                         return map;

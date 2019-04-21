@@ -16,6 +16,8 @@ import android.webinnovatives.com.seefgodriver.common.Common;
 import android.webinnovatives.com.seefgodriver.common.ConstantManager;
 import android.webinnovatives.com.seefgodriver.models.Driver;
 import android.webinnovatives.com.seefgodriver.network.VolleySingleton;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -42,12 +44,40 @@ public class LoginActivity extends AppCompatActivity {
     EditText emailET, passwordET;
     FrameLayout loginBT;
     TextView noAccountTV;
+    CheckBox remember_me;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initUi();
+        String decider = Paper.book().read(ConstantManager.REMEMBER_ME, "null");
+
+        if (decider.equals("true")) {
+            remember_me.setChecked(true);
+            Driver user = Paper.book().read(ConstantManager.USER_DECRYPTED_OBJECT);
+            emailET.setText(user.getDriver_email());
+            passwordET.setText(user.getDriver_password());
+
+        } else
+            remember_me.setChecked(false);
+
+        remember_me.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    if (!TextUtils.isEmpty(emailET.getText().toString()) && !TextUtils.isEmpty(passwordET.getText().toString())) {
+                        Driver user = new Driver();
+                        Paper.book().write(ConstantManager.REMEMBER_ME, "true");
+                        user.setDriver_email(emailET.getText().toString());
+                        user.setDriver_password(passwordET.getText().toString());
+
+                        Paper.book().write(ConstantManager.USER_DECRYPTED_OBJECT, user);
+                    } else
+                        Toast.makeText(LoginActivity.this, "Field(s) Empty", Toast.LENGTH_SHORT).show();
+                } else Paper.book().write(ConstantManager.REMEMBER_ME, "false");
+            }
+        });
         noAccountTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +132,14 @@ public class LoginActivity extends AppCompatActivity {
                             if (root.getString("status").equals("1")) {
                                 Driver user = new Gson().fromJson(root.getJSONObject("user").toString(), Driver.class);
                                 Paper.book().write(ConstantManager.CURRENT_USER, user);
+
+
+                                Driver mUser = new Driver();
+                                mUser.setDriver_email(emailET.getText().toString());
+                                mUser.setDriver_password(passwordET.getText().toString());
+                                Paper.book().write(ConstantManager.USER_DECRYPTED_OBJECT, mUser);
+
+
                                 Common.savePrefs(emailET.getText().toString(), passwordET.getText().toString(), user.getDriver_name(), LoginActivity.this);
                                 startActivity(new Intent(LoginActivity.this, Home.class));
                                 finish();
@@ -167,6 +205,7 @@ public class LoginActivity extends AppCompatActivity {
         emailET = findViewById(R.id.email);
         passwordET = findViewById(R.id.password);
         loginBT = findViewById(R.id.login_button);
+        remember_me = findViewById(R.id.remember_me);
         noAccountTV = findViewById(R.id.no_account);
     }
 }

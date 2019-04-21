@@ -208,6 +208,12 @@ public class DetailsActivity extends AppCompatActivity {
 
                                 Paper.book().write(ConstantManager.CURRENT_USER, user);
 
+                                Driver dc_User = new Driver();
+                                dc_User.setDriver_email(email);
+                                dc_User.setDriver_password(password);
+                                Paper.book().write(ConstantManager.USER_DECRYPTED_OBJECT, dc_User);
+
+
                                 Log.e("Wrote", Paper.book().read(ConstantManager.CURRENT_USER).toString());
                                 Common.savePrefs(email, password, name, DetailsActivity.this);
                                 startActivity(new Intent(DetailsActivity.this, Home.class));
